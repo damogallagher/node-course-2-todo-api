@@ -1,10 +1,24 @@
 const expect = require('expect');
 const request = require('supertest');
+const { ObjectID } = require('mongodb');
 
 const { app } = require('./../server');
 const { Todo } = require('./../models/todo');
 
-const testTodos = [{text: 'text1'}, {text: "text2"}, {text: "text3"}]
+const testTodos = [
+    {
+        _id: new ObjectID(),
+        text: 'text1'
+    },
+    {
+        _id: new ObjectID(),
+        text: "text2"
+    },
+    {
+        _id: new ObjectID(),
+        text: "text3"
+    }
+]
 
 beforeEach((done) => {
     //Wipe all todos from database
@@ -29,7 +43,7 @@ describe('POST /todos', () => {
                 if (err) {
                     return done(err);
                 }
-                Todo.find({text}).then((todos) => {
+                Todo.find({ text }).then((todos) => {
                     expect(todos.length).toBe(1);
                     expect(todos[0].text).toBe(text);
                     done();
@@ -48,7 +62,7 @@ describe('POST /todos', () => {
                 Todo.find().then((todos) => {
                     expect(todos.length).toBe(testTodos.length);
                     done();
-                }).catch((e) => done(e) );
+                }).catch((e) => done(e));
             });
     });
 });
@@ -56,11 +70,38 @@ describe('POST /todos', () => {
 describe('GET /todos', () => {
     it('should get all todos', (done) => {
         request(app)
-        .get('/todos')
-        .expect(200)
-        .expect((res) => {
-            expect(res.body.todos.length).toBe(testTodos.length);
-        })
+            .get('/todos')
+            .expect(200)
+            .expect((res) => {
+                expect(res.body.todos.length).toBe(testTodos.length);
+            })
+            .end(done);
+    });
+});
+
+describe('GET /todos/:id', () => { 
+    it('should return todo doc', (done) => {
+        request(app)
+            .get(`/todos/${testTodos[0]._id.toHexString()}`)
+            .expect(200)
+            .expect((res) => {
+                expect(res.body.todo.text).toBe(testTodos[0].text);
+            })
+            .end(done);
+    }); 
+
+    it('should return 404 if todo not found', (done) => {
+        var hexId = new ObjectID().toHexString();
+        request(app)
+        .get(`/todos/${hexId}`)
+        .expect(404)
         .end(done);
-    })
-})
+    });
+
+    it('should return 404 if id not valid', (done) => {
+        request(app)
+        .get(`/todos/1234`)
+        .expect(404)
+        .end(done);
+    });
+});
