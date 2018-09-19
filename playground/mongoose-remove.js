@@ -1,19 +1,20 @@
 const {ObjectID} = require('mongodb');
 
 const {mongoose} = require('./../server/db/mongoose');
-const {Todo}     = require('./../server/models/todo');
-const {User}     = require('./../server/models/user');
-
-var id = "5ba296413b7de90b716143bd";
+const {Todo} = require('./../server/models/todo');
+const {User} = require('./../server/models/user');
 
 // Todo.remove({}).then((result) => {
-//     console.log(result);
+//   console.log(result);
 // });
 
-// Todo.findOneAndRemove({_id: id}).then((todo) => {
-//     console.log(todo);
+// Todo.findOneAndRemove
+// Todo.findByIdAndRemove
+
+// Todo.findOneAndRemove({_id: '57c4610dbb35fcbf6fda1154'}).then((todo) => {
+//
 // });
 
-Todo.findByIdAndRemove(id).then((todo) => {
-    console.log(todo);
+Todo.findByIdAndRemove('57c4610dbb35fcbf6fda1154').then((todo) => {
+  console.log(todo);
 });
