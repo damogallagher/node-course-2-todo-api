@@ -1,8 +1,8 @@
-const mongoose  = require('mongoose');
+const mongoose = require('mongoose');
 const validator = require('validator');
-const jwt       = require('jsonwebtoken');
-const _         = require('lodash');
-const bcrypt    = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const _ = require('lodash');
+const bcrypt = require('bcryptjs');
 
 var UserSchema = new mongoose.Schema({
   email: {
@@ -21,7 +21,7 @@ var UserSchema = new mongoose.Schema({
     required: true,
     minlength: 6
   },
-  tokens:  [{
+  tokens: [{
     access: {
       type: String,
       required: true
@@ -41,36 +41,36 @@ UserSchema.methods.toJSON = function () {
 };
 
 UserSchema.methods.generateAuthToken = function () {
-    var user = this;
-    var access = 'auth';
-    var token = jwt.sign({_id: user._id.toHexString(), access}, 'abc123').toString();
-    user.tokens = user.tokens.concat([{access,token}]);
+  var user = this;
+  var access = 'auth';
+  var token = jwt.sign({ _id: user._id.toHexString(), access }, 'abc123').toString();
+  user.tokens = user.tokens.concat([{ access, token }]);
 
-    return user.save().then(() => {
-      return token;
-    });
+  return user.save().then(() => {
+    return token;
+  });
 };
 
 UserSchema.statics.findByToken = function (token) {
-   var User = this;
-   var decoded;
+  var User = this;
+  var decoded;
 
-   try {
+  try {
     decoded = jwt.verify(token, 'abc123')
-   } catch (e) {
+  } catch (e) {
     return Promise.reject();
-   }
+  }
 
-   return User.findOne({
-      '_id': decoded._id,
-      'tokens.token': token,
-      'tokens.access': 'auth'
-   });
-   
+  return User.findOne({
+    '_id': decoded._id,
+    'tokens.token': token,
+    'tokens.access': 'auth'
+  });
+
 };
 
 
-UserSchema.pre('save', function(next) {
+UserSchema.pre('save', function (next) {
   var user = this;
 
   if (user.isModified('password')) {
@@ -79,7 +79,7 @@ UserSchema.pre('save', function(next) {
         user.password = hash;
         next();
       })
-  });
+    });
   } else {
     next();
   }
@@ -88,4 +88,4 @@ UserSchema.pre('save', function(next) {
 
 var User = mongoose.model('User', UserSchema);
 
-module.exports = {User}
+module.exports = { User }
