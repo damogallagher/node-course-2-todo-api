@@ -359,4 +359,4 @@ describe('DELETE /users/me/token', () => {
         }).catch((e) => done(e));
       });
   });
-});
+}); 
