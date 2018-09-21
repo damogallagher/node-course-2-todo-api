@@ -6,7 +6,9 @@
   "scripts": {
     "start": "node server/server.js",
     "test": "export NODE_ENV=test || SET \"NODE_ENV=test\" && mocha server/**/*.test.js",
-    "test-watch": "nodemon --exec 'npm test'"
+    "test-watch": "nodemon --exec 'npm test'",
+    "test-coverage": "nyc --reporter=html --reporter=text mocha server/**/*.test.js",
+    "eslint": "eslint server/**/*.js"
   },
   "engines": {
     "node": "10.5.0"
@@ -28,6 +30,10 @@
     "expect": "^23.6.0",
     "mocha": "^5.2.0",
     "nodemon": "^1.18.4",
-    "supertest": "^3.3.0"
+    "supertest": "^3.3.0",
+    "nyc": "^13.0.1",
+    "eslint": "^5.6.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.14.0"
   }
 }
